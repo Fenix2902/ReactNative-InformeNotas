@@ -13,12 +13,32 @@ export function Formulario() {
   const [Nota2, setNota2] = useState("");
   const [Nota3, setNota3] = useState("");
   const [result, setResult] = useState("");
+  const [datosGuardados, setDatosGuardados] = useState([]);
+
 
   let Guardar = () => {
     if (IdEstudiante === "" || NombreEstudiante === "" || Asignatura === "") {
       alert("Faltan datos");
     } else {
-      alert("datos guardados");
+      let nuevoDato = {
+        id: IdEstudiante,
+        nombre: NombreEstudiante,
+        asignatura: Asignatura,
+        nota1: Nota1,
+        nota2: Nota2,
+        nota3: Nota3,
+        promedio: result,
+      };
+      setDatosGuardados((datosPrevios)=>[...datosPrevios, nuevoDato])
+      alert('datos guardados')
+      setIdEstudiante("");
+      setNombreEstudinte("");
+      setAsignatura("");
+      setNota1("");
+      setNota2("");
+      setNota3("");
+      setResult("");
+      console.log(datosGuardados)
     }
   };
   let Calcular = () => {
@@ -30,7 +50,7 @@ export function Formulario() {
       let nota3Valor = parseFloat(Nota3);
 
       if (!isNaN(nota1Valor) && !isNaN(nota2Valor) && !isNaN(nota3Valor)) {
-        if (nota1Valor <= 5 && nota1Valor >= 0 && nota2Valor <= 5 && nota2Valor >=0 && nota3Valor <= 5 && nota3Valor>= 0) {
+        if (nota1Valor <= 5 && nota1Valor >= 0 && nota2Valor <= 5 && nota2Valor >= 0 && nota3Valor <= 5 && nota3Valor >= 0) {
           let promedio = (
             nota1Valor * 0.3 +
             nota2Valor * 0.35 +
@@ -45,6 +65,19 @@ export function Formulario() {
       }
     }
   };
+  let buscarEstudiantePorId = (idBuscado) => {
+    const estudianteEncontrado = datosGuardados.find(
+      (estudiante) => estudiante.id === idBuscado
+    );
+
+    if (estudianteEncontrado) {
+      alert(`Estudiante encontrado: ${estudianteEncontrado.nombre}`);
+      // Puedes realizar otras acciones con el estudiante encontrado aquí
+    } else {
+      alert("Estudiante no encontrado");
+    }
+  };
+
   return (
     <>
       <View>
@@ -105,7 +138,7 @@ export function Formulario() {
           style={styles.btn}
           onPress={() => Guardar()}
         >
-          {" "}
+          {/* {" "} */}
           Guardar
         </Button>
       </View>
@@ -131,6 +164,7 @@ export function Formulario() {
           mode="contained"
           icon="account-search-outline"
           style={styles.btn}
+          onPress={() => buscarEstudiantePorId(IdEstudiante)}
         >
           Buscar
         </Button>
