@@ -15,6 +15,9 @@ export function Formulario() {
   const [result, setResult] = useState("");
   const [observacion, setObservacion] = useState("");
   const [datosGuardados, setDatosGuardados] = useState([]);
+  const [idBuscado, setIdBuscado] = useState("");
+  const [estudianteEncontrado, setEstudianteEncontrado] = useState(null);
+
 
   //funciones
   let Guardar = () => {
@@ -44,7 +47,7 @@ export function Formulario() {
         return;
       }
 
-      setDatosGuardados((datosPrevios) => [...datosPrevios, nuevoDato]);
+      setDatosGuardados((datosPrevios) => [datosPrevios, nuevoDato]);
       setIdEstudiante("");
       setNombreEstudinte("");
       setAsignatura("");
@@ -55,6 +58,8 @@ export function Formulario() {
       setObservacion("");
       alert("datos guardados");
       console.log(datosGuardados);
+
+      setIdBuscado(IdEstudiante);
     }
   };
   let Calcular = () => {
@@ -78,7 +83,7 @@ export function Formulario() {
             nota1Valor * 0.3 +
             nota2Valor * 0.35 +
             nota3Valor * 0.35
-          ).toFixed(2);
+          ).toFixed(1);
 
           // Calcular la observación
           let nuevaObservacion = "";
@@ -102,15 +107,18 @@ export function Formulario() {
       }
     }
   };
-  let buscarEstudiantePorId = (idBuscado) => {
-    const estudianteEncontrado = datosGuardados.find(
-      (estudiante) => estudiante.id === idBuscado
-    );
 
-    if (estudianteEncontrado) {
-      alert(`Estudiante encontrado: ${estudianteEncontrado.nombre}`);
-      // Puedes realizar otras acciones con el estudiante encontrado aquí
+  let buscarEstudiantePorId = () => {
+    // Actualiza idBuscado con el valor de IdEstudiante
+    // setIdBuscado(IdEstudiante);
+    // Encuentra al estudiante en la lista de datosGuardados
+    let estudiante = datosGuardados.find((est) => est.id === idBuscado);
+    // Si se encuentra el estudiante, actualiza el estado
+    if (estudiante) {
+      setEstudianteEncontrado(estudiante);
     } else {
+      // Si no se encuentra, muestra un mensaje de error
+      setEstudianteEncontrado(null);
       alert("Estudiante no encontrado");
     }
   };
@@ -127,7 +135,7 @@ export function Formulario() {
         return "black"; // Color predeterminado si la observación no coincide con ninguna de las opciones anteriores
     }
   };
-  
+
 
   return (
     <>
@@ -207,6 +215,9 @@ export function Formulario() {
             setNota2("");
             setNota3("");
             setResult("");
+            setObservacion("");
+            setEstudianteEncontrado("")
+
           }}
         >
           Limpiar
@@ -221,12 +232,23 @@ export function Formulario() {
         </Button>
       </View>
       <View style={[styles.tinputs]}>
-        <Text style={{fontWeight: "bold"}}>Su Promedio es de : {result}</Text>
-        {/* <Text>Observación: {observacion}</Text> */}
-        <Text style={{ color: getObservationColor(), fontWeight: "bold" }}>Observación: {observacion}</Text>
-        {/* <Text>{result}</Text> */}
-        {/* <TextInput label="Nota Definitiva (calculado)" style={{ margin: 5 }} />
-                <TextInput label="Observaciòn (calculado)" style={{ margin: 5 }} /> */}
+        {estudianteEncontrado && (
+          <View style={styles.tinputs}>
+            <Text style={{ fontWeight: "bold" }}>
+              Estudiante Encontrado: {estudianteEncontrado.nombre},
+            </Text>
+            <Text style={{ fontWeight: "bold" }}>
+            Promedio Estudiante: {estudianteEncontrado.promedio}
+            </Text>
+            <Text style={{ color: getObservationColor(), fontWeight: "bold" }}>
+            Observación al Estudiante: {estudianteEncontrado.observacion}
+            </Text>
+            {/* Puedes mostrar otros detalles del estudiante aquí */}
+          </View>
+        )}
+        <Text style={{ fontWeight: "bold" }}> {result}</Text>
+        <Text style={{ color: getObservationColor(), fontWeight: "bold" }}> {observacion}</Text>
+        {/* <Text style={{ color: getObservationColor(), fontWeight: "bold" }}> {observacion}</Text> */}
       </View>
     </>
   );
